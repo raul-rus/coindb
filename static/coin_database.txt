@@ -1,0 +1,7 @@
+[
+    {"id": 0, "denomination": "dollar", "region": "USA", "year": 1925, "currency": "usd", "metal": ".900 silver", "diameter": 38.1},
+    {"id": 1, "denomination": "5 pesetas", "region": "Spain", "year": 1891, "currency": "peseta", "metal": ".900 silver", "diameter": 37.0},
+    {"id": 2, "denomination": "8 reales", "region": "Colonial Peru", "year": 1785, "currency": "real", "metal": ".903 silver", "diameter": 39.0},
+    {"id": 3, "denomination": "2 pence", "region": "UK", "year": 1797, "currency": "pound sterling", "metal": "copper", "diameter": 41.0},
+    {"id": 4, "denomination": "as", "region": "Rome Mint", "year": 98, "currency": "roman denarius", "metal": "AE", "diameter": 27.3},
+]
