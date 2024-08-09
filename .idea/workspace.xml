@@ -4,11 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0efafbc9-b26d-4d00-893c-c05afa00a25a" name="Changes" comment="Added HTML pages for catalogue, collection, add, and edit. Registered coin attributes in dataframes and have read write to files in JSON.">
+    <list default="true" id="0efafbc9-b26d-4d00-893c-c05afa00a25a" name="Changes" comment="Added AJAX and JSON calls to retrieve and overwrite the database for the add_coin page.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/login.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/test.txt" beforeDir="false" afterPath="$PROJECT_DIR$/static/test.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -110,12 +108,21 @@
       <option name="project" value="LOCAL" />
       <updated>1722092854875</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Added AJAX and JSON calls to retrieve and overwrite the database for the add_coin page.">
+      <option name="closed" value="true" />
+      <created>1722837620039</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1722837620040</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Set up the backend framework using Flask." />
     <MESSAGE value="Added HTML pages for catalogue, collection, add, and edit. Registered coin attributes in dataframes and have read write to files in JSON." />
-    <option name="LAST_COMMIT_MESSAGE" value="Added HTML pages for catalogue, collection, add, and edit. Registered coin attributes in dataframes and have read write to files in JSON." />
+    <MESSAGE value="Added AJAX and JSON calls to retrieve and overwrite the database for the add_coin page." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added AJAX and JSON calls to retrieve and overwrite the database for the add_coin page." />
   </component>
 </project>
