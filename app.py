@@ -6,8 +6,7 @@ from flask import Flask, request, render_template
 app = Flask(__name__, static_folder='static',)
 
 ACCESS = 'http://127.0.0.1:8000/hello'
-ROOT = '/Users/raulrus/coindb-data'
-DATABASE_FILE_PATH = os.path.join(ROOT, 'coin_database.txt')
+DATABASE_FILE_PATH = 'static/coin_database.txt'
 f = open(DATABASE_FILE_PATH, "r")
 data = json.loads(f.read())
 f.close()
@@ -19,21 +18,29 @@ def find_id(denomination, region, year, currency, metal, diameter):
     return -1
 
 def create_database():
-    data.append(["id", "denomination", "region", "year", "currency", "metal", "diameter"])
+    #data.append(["id", "image", "denomination", "region", "year", "currency", "metal", "diameter"])
     f = open(DATABASE_FILE_PATH, "w")
-    f.write(json.dumps(data))
+    f.write(json.dumps([["id", "image", "denomination", "region", "year", "currency", "metal", "diameter"]]))
     f.close()
 
-def add_new_data(denomination, region, year, currency, metal, diameter):
+def add_new_data(denomination, image, region, year, currency, metal, diameter):
     data.append([len(data), denomination, region, year, currency, metal, diameter])
     f = open(DATABASE_FILE_PATH, "w")
     f.write(json.dumps(data))
     f.close()
 
-def overwrite_data(id, denomination, region, year, currency, metal, diameter):
-    data[id] = [id, denomination, region, year, currency, metal, diameter]
+def overwrite_data(id, image, denomination, region, year, currency, metal, diameter):
+    data[id] = [id, image, denomination, region, year, currency, metal, diameter]
 
-# parameters flask
+create_database()
+
+@app.route("/get_coins", methods=['GET'])
+def get_coins():
+    f = open(DATABASE_FILE_PATH, "r")
+    data = json.loads(f.read())
+    return data
+
+
 @app.route("/add", methods=['POST'])
 def add():
     features = request.get_json()
@@ -47,13 +54,6 @@ def edit():
     serial = find_id(*features)
     #overwrite_data(serial, *features)
     return {'response': "Coin edited"}
-
-@app.route("/coins")
-def coins():
-    f = open(DATABASE_FILE_PATH, "r")
-    result = f.read()
-    f.close()
-    return result
 
 if __name__ == '__main__':
    app.run()
