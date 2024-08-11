@@ -4,10 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0efafbc9-b26d-4d00-893c-c05afa00a25a" name="Changes" comment="Added test images and fixed the file path to static.">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/coin_database.txt" beforeDir="false" afterPath="$PROJECT_DIR$/static/coin_database.txt" afterDir="false" />
+    <list default="true" id="0efafbc9-b26d-4d00-893c-c05afa00a25a" name="Changes" comment="Added search and table to catalogue.">
+      <change afterPath="$PROJECT_DIR$/static/add_coin.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/catalogue.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/display_collection.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/display_collection.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/edit_coin.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/table.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -133,7 +136,15 @@
       <option name="project" value="LOCAL" />
       <updated>1723299297125</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Added search and table to catalogue.">
+      <option name="closed" value="true" />
+      <created>1723416536008</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1723416536008</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -142,6 +153,7 @@
     <MESSAGE value="Added AJAX and JSON calls to retrieve and overwrite the database for the add_coin page." />
     <MESSAGE value="Added a method to display coin data in a table with separate js and css files" />
     <MESSAGE value="Added test images and fixed the file path to static." />
-    <option name="LAST_COMMIT_MESSAGE" value="Added test images and fixed the file path to static." />
+    <MESSAGE value="Added search and table to catalogue." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added search and table to catalogue." />
   </component>
 </project>
