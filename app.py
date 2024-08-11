@@ -32,7 +32,6 @@ def add_new_data(denomination, image, region, year, currency, metal, diameter):
 def overwrite_data(id, image, denomination, region, year, currency, metal, diameter):
     data[id] = [id, image, denomination, region, year, currency, metal, diameter]
 
-create_database()
 
 @app.route("/get_coins", methods=['GET'])
 def get_coins():

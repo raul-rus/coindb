@@ -1,1 +1,1 @@
-[["id", "image", "denomination", "region", "year", "currency", "metal", "diameter"]]
+[["id", "image", "denomination", "region", "year", "currency", "metal", "diameter"], [1, "image", "half dollar", "usa", "1856", "dollar", "900 silver", 30.6]]
