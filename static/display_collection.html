@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+// First, make display have all coins in country alphabetical with edit button, then add folders and dragging events
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="/static/display_collection.js"></script>
+    <link href="/static/table.css" rel="stylesheet" />
+</head>
+<body>
+<h1>Display Collection</h1>
+<hr>
+<button type="button" id ="add" onclick="add()">Add More Coins</button>
+<button type="button" id ="callback" onclick='$.ajax({url: "/dummy", success: callback});'>Call back</button>
+<button type="button" id ="display" onclick='$.ajax({url: "/get_coins", success: callback});'>Display Coins</button>
+<div id="coin_list"></div>
+<img src="/static/coin1.jpg" alt="ball">
+</body>
+</html>

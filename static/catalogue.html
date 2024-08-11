@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+// Dynamic page which loads coin entries based on search results
+// By default, it displays the coins in an alphabetical by country, then chronological order
+// Get from database and organize in such an order, then change dynamically with search
+// Each letter typed is taken as input, and the best matching are displayed below
+// Each coin displayed can also be edited to with a button
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="/static/display_collection.js"></script>
+    <script src="/static/catalogue.js"></script>
+    <link href="/static/table.css" rel="stylesheet" />
+</head>
+<body>
+<h1>Coin Catalogue</h1>
+<hr>
+<label for="search">Search for Coins:</label>
+<input type="text" id="search" name="search" onkeypress="update_search();"><br><br>
+<hr>
+<div id="coin_list"></div>
+<hr>
+<button type="button" id ="add" onclick='$.ajax({url: "/add", success: callback});'>Add New Coins</button>
+<button type="button" id ="display" onclick='$.ajax({url: "/get_coins", success: callback});'>Display Coins</button>
+</body>
+</html>

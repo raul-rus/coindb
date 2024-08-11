@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>Add New Coin</h1>
+<hr>
+<label for="denomination">Denomination:</label>
+<input type="text" id="denomination" name="denomination"><br><br>
+<hr>
+<label for="region">Region:</label>
+<input type="text" id="region" name="region"><br><br>
+<hr>
+<label for="year">Year:</label>
+<input type="text" id="year" name="year"><br><br>
+<hr>
+<label for="currency">Currency:</label>
+<input type="text" id="currency" name="currency"><br><br>
+<hr>
+<label for="metal">Metal:</label>
+<input type="text" id="metal" name="metal"><br><br>
+<hr>
+<label for="diameter">Diameter (mm):</label>
+<input type="text" id="diameter" name="diameter"><br><br>
+<hr>
+<button type="button" id ="submit" onclick="submit()">Submit</button>
+<hr>
+<script>
+    function callback(result) {
+        console.log(result.response);
+        window.location.href = "http://127.0.0.1:8000/add_coin";
+    }
+    function submit() {
+        const features = [
+            $('#denomination').val(),
+            $('#region').val(),
+            $('#year').val(),
+            $('#currency').val(),
+            $('#metal').val(),
+            $('#diameter').val()
+        ];
+        console.log('stringified: ' + JSON.stringify(features));
+        $.ajax({
+            type: 'POST',
+            url: "/add",
+            data: JSON.stringify(features),
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: callback});
+    }
+</script>
+</body>
+</html>
