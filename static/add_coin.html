@@ -8,6 +8,10 @@
 <body>
 <h1>Add New Coin</h1>
 <hr>
+<div id="uploaded"></div>
+<input type=file name=myfile id="myfile">
+<input type=submit value=Upload onclick="upload_image()">
+<hr>
 <label for="denomination">Denomination:</label>
 <input type="text" id="denomination" name="denomination"><br><br>
 <hr>
@@ -33,16 +37,40 @@
         console.log(result.response);
         window.location.href = "http://127.0.0.1:8000/add_coin";
     }
+
+    function upload_callback(result) {
+        console.log(result.response);
+        $('#uploaded').html("<img src=" + result.response + ">");
+    }
+
+    function upload_image() {
+        var formData = new FormData();
+        files= $('#myfile').prop('files');
+        file = files[0];
+        formData.append('myfile', file, file.name);
+        $.ajax({
+            type: 'POST',
+            url: "/upload_image",
+            data: formData,
+            enctype: 'multipart/form-data',
+            processData: false,  // tell jQuery not to process the data
+            contentType: false,   // tell jQuery not to set contentType
+            success: upload_callback});
+    }
+
+
     function submit() {
-        const features = [
-            $('#denomination').val(),
-            $('#region').val(),
-            $('#year').val(),
-            $('#currency').val(),
-            $('#metal').val(),
-            $('#diameter').val()
-        ];
+        const features = {
+            denomination: $('#denomination').val(),
+            region: $('#region').val(),
+            year: $('#year').val(),
+            currency: $('#currency').val(),
+            metal: $('#metal').val(),
+            diameter: $('#diameter').val()
+        };
+
         console.log('stringified: ' + JSON.stringify(features));
+
         $.ajax({
             type: 'POST',
             url: "/add",
@@ -50,6 +78,8 @@
             dataType: "json",
             contentType: "application/json; charset=utf-8",
             success: callback});
+
+        document.location.href = "http://127.0.0.1:5000/static/catalogue.html";
     }
 </script>
 </body>

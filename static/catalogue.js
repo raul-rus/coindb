@@ -29,4 +29,6 @@ function update_search() {
     makeTable($("#coin_list"), results);
 }
 
-
+function add() {
+    document.location.href = "/static/add_coin.html";
+}

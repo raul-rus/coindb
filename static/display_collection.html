@@ -12,9 +12,7 @@
 <h1>Display Collection</h1>
 <hr>
 <button type="button" id ="add" onclick="add()">Add More Coins</button>
-<button type="button" id ="callback" onclick='$.ajax({url: "/dummy", success: callback});'>Call back</button>
-<button type="button" id ="display" onclick='$.ajax({url: "/get_coins", success: callback});'>Display Coins</button>
+<button type="button" id ="display" onclick='$.ajax({url: "/get_coins", success: display_callback});'>Display Coins</button>
 <div id="coin_list"></div>
-<img src="/static/coin1.jpg" alt="ball">
 </body>
 </html>
