@@ -35,7 +35,6 @@
 <script>
     function callback(result) {
         console.log(result.response);
-        window.location.href = "http://127.0.0.1:8000/add_coin";
     }
 
     function upload_callback(result) {
@@ -61,6 +60,7 @@
 
     function submit() {
         const features = {
+            image: $('#myfile').prop('files')[0].name,
             denomination: $('#denomination').val(),
             region: $('#region').val(),
             year: $('#year').val(),
@@ -71,15 +71,20 @@
 
         console.log('stringified: ' + JSON.stringify(features));
 
-        $.ajax({
+        response = $.ajax({
             type: 'POST',
             url: "/add",
             data: JSON.stringify(features),
             dataType: "json",
             contentType: "application/json; charset=utf-8",
-            success: callback});
+            async: false}).responseText;
 
-        document.location.href = "http://127.0.0.1:5000/static/catalogue.html";
+        if (JSON.parse(response).response == "Coin added") {
+            alert("Coin added");
+            document.location.href = "/static/catalogue.html";
+        } else {
+            alert("Coin not added");
+        }
     }
 </script>
 </body>

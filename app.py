@@ -38,7 +38,8 @@ def reset_database():
 def add_new_data(denomination, image, region, year, currency, metal, diameter):
     f = open(DATABASE_FILE_PATH, "r")
     data = json.loads(f.read())
-    data.append([len(data), denomination, image, region, year, currency, metal, diameter])
+    f.close()
+    data.append([len(data), image, denomination, region, year, currency, metal, diameter])
     f = open(DATABASE_FILE_PATH, "w")
     f.write(json.dumps(data))
     f.close()
