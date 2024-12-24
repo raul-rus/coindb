@@ -11,6 +11,7 @@
 <div id="uploaded"></div>
 <input type=file name=myfile id="myfile">
 <input type=submit value=Upload onclick="upload_image()">
+<div id="scores"></div>
 <hr>
 <label for="denomination">Denomination:</label>
 <input type="text" id="denomination" name="denomination"><br><br>
@@ -40,6 +41,12 @@
     function upload_callback(result) {
         console.log(result.response);
         $('#uploaded').html("<img src=" + result.response + ">");
+        let scores = "AI inferred scores: | "
+        for (key in result.scores) {
+            value = result.scores[key];
+            scores += key + ' = ' + value + " | "
+        }
+        $('#scores').html(scores);
     }
 
     function upload_image() {

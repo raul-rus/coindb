@@ -1,10 +1,15 @@
 import json
 import os
+
+import torch
 from flask import Flask, flash, request, redirect, url_for
 from werkzeug.utils import secure_filename
+from coin_grader.model import Net
 
 UPLOAD_FOLDER = 'static/uploads'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+FEATURES = ['shape', 'wear', 'metal']
+MODELS = {}
 
 app = Flask(__name__, static_folder='static')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -49,6 +54,27 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+def load_models():
+    for feature in FEATURES:
+        # Loads the weights and initialises model.
+        file_name = f'coin_grader/coins/{feature}.txt'
+        model = Net(file_name)
+        model.load_state_dict(torch.load(f'coin_grader/{feature}_weights.pth'))
+        MODELS[feature] = model
+
+
+def score(image_path):
+    # Each feature has a label file.
+    results = {}
+
+    for feature in FEATURES:
+        # Scores the model.
+        tensors = Net.images_to_tensor([image_path])
+        model = MODELS[feature]
+        results[feature] = model.value_to_label(model.score(tensors)[0])
+
+    return results
+
 
 @app.route("/get_coins", methods=['GET'])
 def get_coins():
@@ -83,9 +109,11 @@ def upload_file():
         return redirect(request.url)
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        return {'response': os.path.join('uploads', filename)}
+        path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(path)
+        return {'response': os.path.join('uploads', filename), 'scores': score(path)}
     return {'response': "BAD"}
 
 if __name__ == '__main__':
+    load_models()
     app.run(host='0.0.0.0', port=8000)

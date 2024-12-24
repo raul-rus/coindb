@@ -6,7 +6,7 @@ function makeTable(container, data) {
         table += "<tr>";
         for (j = 0; j < row.length; j++) {
             table += "<td>";
-            if (j == 1) {
+            if (j == 1 && i > 0) {
                 table += "<img src=" + "uploads/" + row[j] + ">";
             } else {
                 table += row[j];
@@ -31,7 +31,8 @@ function callback(result_in) {
 function update_search() {
     query = $("#search").val();
     results = [];
-    for (let i = 0; i < current_coins.length; i++) {
+    results.push(current_coins[0]);
+    for (let i = 1; i < current_coins.length; i++) {
         let coin = current_coins[i];
         if (coin[2].match(query)) {
             results.push(coin);
