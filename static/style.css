@@ -1,0 +1,24 @@
+#add_coin_style {
+
+}
+button {
+    background-color: #04AA6D; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    box-shadow: 0 2px 4px darkslategray;
+    transition: all 0.03s linear;
+}
+
+button:hover {
+  background-color: #65b9e6;
+}
+
+button:active {
+  box-shadow: 0 0 2px darkslategray;
+  transform: translateY(2px);
+}
