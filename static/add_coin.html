@@ -1,97 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="/static/edit_coin.js"></script>
+    <script src="/static/add_coin.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="table.css">
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title id="title">Add Coin</title>
 </head>
 <body>
-<h1>Add New Coin</h1>
+<h1 id="header">Add New Coin</h1>
 <hr>
-<div id="uploaded"></div>
-<input type=file name=myfile id="myfile">
-<input type=submit value=Upload onclick="upload_image()">
-<div id="scores"></div>
-<hr>
-<label for="denomination">Denomination:</label>
-<input type="text" id="denomination" name="denomination"><br><br>
-<hr>
-<label for="region">Region:</label>
-<input type="text" id="region" name="region"><br><br>
-<hr>
-<label for="year">Year:</label>
-<input type="text" id="year" name="year"><br><br>
-<hr>
-<label for="currency">Currency:</label>
-<input type="text" id="currency" name="currency"><br><br>
-<hr>
-<label for="metal">Metal:</label>
-<input type="text" id="metal" name="metal"><br><br>
-<hr>
-<label for="diameter">Diameter (mm):</label>
-<input type="text" id="diameter" name="diameter"><br><br>
-<hr>
-<button type="button" id ="submit" onclick="submit()">Submit</button>
-<hr>
+<div id="add_coin_style">
+    <div id="uploaded"></div>
+    <input type=file name=myfile id="myfile">
+    <input type=submit value=Upload onclick="upload_image()">
+    <div id="scores"></div>
+    <hr>
+    <table>
+        <tr>
+            <td><label for="denomination">Denomination:</label></td>
+            <td><input type="text" id="denomination" name="denomination"></td>
+        </tr>
+        <tr>
+            <td><label for="region">Region:</label></td>
+            <td><input type="text" id="region" name="region"></td>
+        </tr>
+        <tr>
+            <td><label for="year">Year:</label></td>
+            <td><input type="text" id="year" name="year"></td>
+        </tr>
+        <tr>
+            <td><label for="currency">Currency:</label></td>
+            <td><input type="text" id="currency" name="currency"></td>
+        </tr>
+        <tr>
+            <td><label for="metal">Metal:</label></td>
+            <td><input type="text" id="metal" name="metal"></td>
+        </tr>
+        <tr>
+            <td><label for="diameter">Diameter (mm):</label></td>
+            <td><input type="text" id="diameter" name="diameter"></td>
+        </tr>
+    </table>
+    <button type="button" id ="submit" onclick="submit()">Submit</button>
+    <button type="button" id ="cancel" onclick="cancel()">Cancel</button>
+</div>
 <script>
-    function callback(result) {
-        console.log(result.response);
-    }
-
-    function upload_callback(result) {
-        console.log(result.response);
-        $('#uploaded').html("<img src=" + result.response + ">");
-        let scores = "AI inferred scores: | "
-        for (key in result.scores) {
-            value = result.scores[key];
-            scores += key + ' = ' + value + " | "
-        }
-        $('#scores').html(scores);
-    }
-
-    function upload_image() {
-        var formData = new FormData();
-        files= $('#myfile').prop('files');
-        file = files[0];
-        formData.append('myfile', file, file.name);
-        $.ajax({
-            type: 'POST',
-            url: "/upload_image",
-            data: formData,
-            enctype: 'multipart/form-data',
-            processData: false,  // tell jQuery not to process the data
-            contentType: false,   // tell jQuery not to set contentType
-            success: upload_callback});
-    }
-
-
-    function submit() {
-        const features = {
-            image: $('#myfile').prop('files')[0].name,
-            denomination: $('#denomination').val(),
-            region: $('#region').val(),
-            year: $('#year').val(),
-            currency: $('#currency').val(),
-            metal: $('#metal').val(),
-            diameter: $('#diameter').val()
-        };
-
-        console.log('stringified: ' + JSON.stringify(features));
-
-        response = $.ajax({
-            type: 'POST',
-            url: "/add",
-            data: JSON.stringify(features),
-            dataType: "json",
-            contentType: "application/json; charset=utf-8",
-            async: false}).responseText;
-
-        if (JSON.parse(response).response == "Coin added") {
-            alert("Coin added");
-            document.location.href = "/static/catalogue.html";
-        } else {
-            alert("Coin not added");
-        }
+    if (window.location.hash) {
+        $.ajax({url: "/get_coins", success: edit_initialisation_callback});
+        $('#header').text("Edit Coin");
+        $('#title').text("Edit Coin");
     }
 </script>
 </body>

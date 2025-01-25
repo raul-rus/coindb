@@ -16,37 +16,56 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 #ACCESS = 'http://127.0.0.1:8000/'
 DATABASE_FILE_PATH = 'static/coin_database.txt'
-
-
-# http://127.0.0.1:5000/static/display_collection.html
-# http://127.0.0.1:5000/static/catalogue.html
-# http://127.0.0.1:5000/static/edit_coin.html
-# http://127.0.0.1:5000/static/add_coin.html
+COLLECTION_FILE_PATH = 'static/display_collection.txt'
 
 
 def overwrite_coin(id, image, denomination, region, year, currency, metal, diameter):
     # reads from file to change data at id and overwrites with new data
     f = open(DATABASE_FILE_PATH, "r")
     data = json.loads(f.read())
-    data[id] = [id, image, denomination, region, year, currency, metal, diameter]
+    data[int(id)] = [id, image, denomination, region, year, currency, metal, diameter]
     f.close()
     f = open(DATABASE_FILE_PATH, "w")
     f.write(json.dumps(data))
     f.close()
+
 
 def reset_database():
     f = open(DATABASE_FILE_PATH, "w")
     f.write(json.dumps([["id", "image", "denomination", "region", "year", "currency", "metal", "diameter"]]))
     f.close()
 
+def generate_new_id():
+    # find the highest id and increments by one to generate a new coin id
+    f = open(DATABASE_FILE_PATH, "r")
+    data = json.loads(f.read())
+    highest_id = 0
+    for coin in data:
+        if coin[0] > highest_id:
+            highest_id = coin[0]
+
+    return highest_id + 1
+
 
 def add_new_data(denomination, image, region, year, currency, metal, diameter):
     f = open(DATABASE_FILE_PATH, "r")
     data = json.loads(f.read())
     f.close()
-    data.append([len(data), image, denomination, region, year, currency, metal, diameter])
+    data.append([generate_new_id(), image, denomination, region, year, currency, metal, diameter])
     f = open(DATABASE_FILE_PATH, "w")
     f.write(json.dumps(data))
+    f.close()
+
+
+def remove_data(coin_id):
+    f = open(DATABASE_FILE_PATH, "r")
+    data = json.loads(f.read())
+    f.close()
+
+    result = [coin for coin in data if str(coin[0]) != str(coin_id)]
+
+    f = open(DATABASE_FILE_PATH, "w")
+    f.write(json.dumps(result))
     f.close()
 
 
@@ -83,35 +102,41 @@ def get_coins():
     return data
 
 
+@app.route("/get_collection", methods=['GET'])
+def get_collection():
+    f = open(COLLECTION_FILE_PATH, "r")
+    collection = json.loads(f.read())
+    return collection
+
+
 @app.route("/add", methods=['POST'])
 def add():
     features = request.get_json()
     add_new_data(**features)
-    return {'response': "Coin added"}
+    return {'response': "OK"}
+
+
+@app.route("/remove", methods=['POST'])
+def remove():
+    features = request.get_json()
+    remove_data(features)
+    return {'response': "OK"}
+
 
 @app.route("/edit", methods=['POST'])
 def edit():
     features = request.get_json()
-    overwrite_coin(*features)
-    return {'response': "Coin edited"}
+    overwrite_coin(**features)
+    return {'response': "OK"}
 
 @app.route('/upload_image', methods=['POST'])
 def upload_file():
-    # check if the post request has the file part
-    if 'myfile' not in request.files:
-        flash('No file part')
-        return redirect(request.url)
     file = request.files['myfile']
-    # If the user does not select a file, the browser submits an
-    # empty file without a filename.
-    if file.filename == '':
-        flash('No selected file')
-        return redirect(request.url)
     if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
-        path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
         file.save(path)
-        return {'response': os.path.join('uploads', filename), 'scores': score(path)}
+        return {'response': os.path.join('uploads', file.filename),
+                'scores': score(path)}
     return {'response': "BAD"}
 
 if __name__ == '__main__':
