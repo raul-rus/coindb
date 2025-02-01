@@ -52,10 +52,16 @@ def add_new_data(denomination, image, region, year, currency, metal, diameter):
     data = json.loads(f.read())
     f.close()
     data.append([generate_new_id(), image, denomination, region, year, currency, metal, diameter])
+    data.append("/n")
     f = open(DATABASE_FILE_PATH, "w")
     f.write(json.dumps(data))
     f.close()
 
+
+def write_collection(collection):
+    f = open(COLLECTION_FILE_PATH, "w")
+    f.write(json.dumps(collection))
+    f.close()
 
 def remove_data(coin_id):
     f = open(DATABASE_FILE_PATH, "r")
@@ -99,6 +105,7 @@ def score(image_path):
 def get_coins():
     f = open(DATABASE_FILE_PATH, "r")
     data = json.loads(f.read())
+    f.close()
     return data
 
 
@@ -106,7 +113,13 @@ def get_coins():
 def get_collection():
     f = open(COLLECTION_FILE_PATH, "r")
     collection = json.loads(f.read())
+    f.close()
     return collection
+
+@app.route("/save_collection", methods=['POST'])
+def save_collection():
+    write_collection(request.get_json())
+    return {'response': "OK"}
 
 
 @app.route("/add", methods=['POST'])
@@ -129,6 +142,7 @@ def edit():
     overwrite_coin(**features)
     return {'response': "OK"}
 
+
 @app.route('/upload_image', methods=['POST'])
 def upload_file():
     file = request.files['myfile']
@@ -138,6 +152,7 @@ def upload_file():
         return {'response': os.path.join('uploads', file.filename),
                 'scores': score(path)}
     return {'response': "BAD"}
+
 
 if __name__ == '__main__':
     load_models()

@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="/static/display_collection.js"></script>
     <script src="/static/catalogue.js"></script>
     <link href="/static/table.css" rel="stylesheet" />
     <link rel="stylesheet" href="style.css">
@@ -13,13 +12,20 @@
 <body>
 <h1>Coin Catalogue</h1>
 <hr>
+<div class="dropdown">
+      <select name="collection_list" id="collection_list" onchange="select_collection(this.selectedIndex);">
+          <-- This gets populated by the /get_collection callback. -->
+      </select>
+    <button type="button" id ="new_collection" onclick='add_new_collection()'>New Collection</button>
+    <input type="text" id="new_collection_name" name="new_collection_name">
+</div>
+<div id="collection"></div>
+<hr>
 <label for="search">Search for Coins:</label>
 <input type="text" id="search" name="search" onkeyup="update_search();"><br><br>
-<hr>
 <div id="coin_list"></div>
 <hr>
 <button type="button" id ="add" onclick='add()'>Add New Coins</button>
-<button type="button" id ="display" onclick='$.ajax({url: "/get_coins", success: callback});'>Display Coins</button>
-<button type="button" id ="collection" onclick='collection()'>View Your Collection</button>
+<button type="button" id ="display" onclick='$.ajax({url: "/get_coins", success: get_coins_callback});'>Display Coins</button>
 </body>
 </html>

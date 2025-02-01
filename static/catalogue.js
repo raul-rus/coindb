@@ -1,11 +1,15 @@
-function makeTable(container, data) {
+// Generates a table of all the coin attributes and buttons.
+function make_table(container, data) {
     var table = "<table>";
 
+    // This creates every table row for every coin.
     for (i = 0; i < data.length; i++) {
         const row = data[i];
         table += "<tr>";
+        // Adds the coin attributes to each row.
         for (j = 0; j < row.length; j++) {
             table += "<td>";
+            // Adds images to elements under the header.
             if (j == 1 && i > 0) {
                 table += "<img src=" + "uploads/" + row[j] + ">";
             } else {
@@ -13,14 +17,13 @@ function makeTable(container, data) {
             }
             table += "</td>";
         }
+        // Adds buttons to each row beneath the header, gives each a distinct id.
         table += "<td>";
         if (i > 0) {
-            // This button triggers edit coin and calls edit to send the coin id to the URL hash
+            // This button triggers edit coin and calls edit to send the coin id to the URL hash.
             table += "<button type='button' id='edit_coin' onclick=edit(" + data[i][0] + ")"
                 + ">Edit Coin</button>"
-            // This button adds the coin to the collection and sends the id to the hash for display
-            table += "<button type='button' id='add" + data[i][0] + "' onclick=add_to_collection(" + data[i][0] + ")"
-                + ">Add to Collection</button>"
+            // This button adds the coin to the collection and sends the id to the hash for display.
             table += "<button type='button' id='delete_coin' onclick=delete_coin(" + data[i][0] + ")"
                 + ">Delete Coin</button>"
         }
@@ -39,16 +42,41 @@ function add_to_collection(coin_id) {
     document.location.href = "/static/display_collection.html#" + coin_id;
 }
 
-
+// Current coins is the list of coins to display in the catalogue table.
 var current_coins = [];
+// Current collections is the list of collections with their ids.
+var current_collections = [];
+
+$.ajax({url: "/get_collection", success: get_collection_callback})
 
 
-function callback(result_in) {
+function get_coins_callback(result_in) {
     current_coins = result_in;
-    makeTable($("#coin_list"), result_in);
+    make_table($("#coin_list"), result_in);
+}
+
+function get_collection_callback(result_in) {
+    current_collections = result_in;
+    fill_dropdown($("#collection_list"));
+}
+
+// Populates the dropdown menu by sending a request for all collection names
+function fill_dropdown(container) {
+    var dropdown = "";
+    for (let i = 0; i < current_collections.length; i++) {
+        dropdown += "<option value='" + i + "'>"
+        dropdown += current_collections[i].name + "</option>";
+    }
+    return container.html(dropdown);
+}
+
+// Adds collection name to title and images to div displaying collection.
+function select_collection(index) {
+    $("#collection").html(current_collections[index].coins.toString());
 }
 
 
+// This function is called to send a list of results in search.
 function update_search() {
     query = $("#search").val();
     results = [];
@@ -69,10 +97,31 @@ function add() {
     document.location.href = "/static/add_coin.html";
 }
 
-function collection() {
-    document.location.href = "/static/display_collection.html";
+
+function add_new_collection() {
+    name = $("#new_collection_name").val();
+    current_collections.push({"name": name, "coins": []});
+    fill_dropdown($("#collection_list"));
+    save_collection();
 }
 
+
+function save_collection() {
+    response = $.ajax({
+        type: 'POST',
+        url: "/save_collection",
+        data: JSON.stringify(current_collections),
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        async: false}).responseText;
+
+    if (JSON.parse(response).response != "OK") {
+        alert(command + " not successful");
+    }
+}
+
+
+// Sends a request to the backend to remove a coin.
 function delete_coin(coin_id) {
 
     response = $.ajax({
