@@ -1,15 +1,15 @@
 // Generates a table of all the coin attributes and buttons.
 function make_table(container, data) {
     var table = "<table>";
-    table += "<col span='1' style='width: 10px;'>"; // ID
-    table += "<col span='1' style='width: 25px;'>"; // Image
-    table += "<col span='1' style='width: 25px;'>"; // Denomination
+    table += "<col span='1' style='width: 5px;'>"; // ID
+    table += "<col span='1' style='width: 75px;'>"; // Image
+    table += "<col span='1' style='width: 20px;'>"; // Denomination
     table += "<col span='1' style='width: 50px;'>"; // Region
-    table += "<col span='1' style='width: 50px;'>";
-    table += "<col span='1' style='width: 50px;'>";
-    table += "<col span='1' style='width: 100px;'>";
-    table += "<col span='1' style='width: 20px;'>";
-    table += "<col span='1' style='width: 100px;'>";
+    table += "<col span='1' style='width: 50px;'>"; // Year
+    table += "<col span='1' style='width: 50px;'>"; // Currency
+    table += "<col span='1' style='width: 100px;'>"; // Metal
+    table += "<col span='1' style='width: 20px;'>"; // Diameter
+    table += "<col span='1' style='width: 100px;'>"; // Buttons
     // This creates every table row for every coin.
     for (i = 0; i < data.length; i++) {
         const row = data[i];
@@ -47,6 +47,7 @@ function make_table(container, data) {
 
 function edit(coin_id) {
     document.location.href = "/static/add_coin.html#" + coin_id;
+
 }
 
 // Current coins is the list of coins to display in the catalogue table.
@@ -90,9 +91,9 @@ function display_selected_collection() {
                 selected_image = current_coins[j][1];
             }
         }
-        // Images are stored in uploads folder, so that has to be added manually.
-        result += "<img src='" + "uploads/" + selected_image + "' ";
-        result += "onclick='remove_from_collection(" + i + ")'>";
+        result += "<img src='" + "uploads/" + selected_image + "' "; // Adds image
+        result += "onclick='remove_from_collection(" + i + ")'" // Adds click event to remove with coin index
+        result += "style='height:250px;width:auto;' onmouseover='display_coin_data(" + i + ")'>"; // Adds mouseover event to display data
     }
     $("#collection").html(result);
 }
@@ -114,6 +115,25 @@ function remove_from_collection(coin_index) {
 }
 
 
+// For coin hovered, retrieve and display data on div.
+function display_coin_data(coin_index) {
+    // Uses index of coin in collection to retrieve coin id from catalogue to get other information
+    result = "";
+
+    collection_index = $("#collection_list").val();
+    coin_id = current_collections[collection_index].coins[coin_index];
+    for (let i = 0; i < current_coins.length; i++) {
+        if (String(coin_id) == String(current_coins[i][0])) {
+            for (let j = 2; j < current_coins[i].length; j++) {
+                // Adds coins to the information, starting from denomination and uses titles from current_coins[0]
+                result += "<div>" + String(current_coins[0][j]) + ": " + String(current_coins[i][j]) + "</div><br>";
+            }
+        }
+    }
+    $("#coin_information").html(result);
+}
+
+
 // This function is called to send a list of results in search.
 function update_search() {
     query = $("#search").val();
@@ -128,7 +148,7 @@ function update_search() {
             }
         }
     }
-    makeTable($("#coin_list"), results);
+    make_table($("#coin_list"), results);
 }
 
 function add() {
@@ -141,6 +161,11 @@ function add_new_collection() {
     current_collections.push({"name": name, "coins": []});
     fill_dropdown($("#collection_list"));
     save_collection();
+}
+
+
+function delete_collection() {
+
 }
 
 

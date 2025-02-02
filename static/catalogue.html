@@ -13,18 +13,22 @@
 <h1>Coin Catalogue</h1>
 <hr>
 <div class="dropdown">
-      <select name="collection_list" id="collection_list" onchange="display_selected_collection();">
-          <-- This gets populated by the /get_collection callback. -->
-      </select>
-    <button type="button" id ="new_collection" onclick='add_new_collection()'>New Collection</button>
+    <label for="collection_list">Choose Collection:</label>
+    <select name="collection_list" id="collection_list" onchange="display_selected_collection();">
+        <-- This gets populated by the /get_collection callback. -->
+    </select><br><br>
+    <label for="new_collection_name">Type Collection Name:</label>
     <input type="text" id="new_collection_name" name="new_collection_name">
+    <button type="button" id ="new_collection" onclick='add_new_collection()'>Add New Collection</button>
+    <button type="button" id ="delete_collection" onclick='delete_collection()'>Delete This Collection</button>
 </div>
 <div id="collection"></div>
+<div id="coin_information"></div>
 <hr>
 <label for="search">Search for Coins:</label>
 <input type="text" id="search" name="search" onkeyup="update_search();"><br><br>
 <div id="coin_list"></div>
-<hr>
 <button type="button" id ="add" onclick='add()'>Add New Coins</button>
+<hr>
 </body>
 </html>
