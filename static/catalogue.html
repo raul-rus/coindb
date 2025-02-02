@@ -13,7 +13,7 @@
 <h1>Coin Catalogue</h1>
 <hr>
 <div class="dropdown">
-      <select name="collection_list" id="collection_list" onchange="select_collection(this.selectedIndex);">
+      <select name="collection_list" id="collection_list" onchange="display_selected_collection();">
           <-- This gets populated by the /get_collection callback. -->
       </select>
     <button type="button" id ="new_collection" onclick='add_new_collection()'>New Collection</button>
@@ -26,6 +26,5 @@
 <div id="coin_list"></div>
 <hr>
 <button type="button" id ="add" onclick='add()'>Add New Coins</button>
-<button type="button" id ="display" onclick='$.ajax({url: "/get_coins", success: get_coins_callback});'>Display Coins</button>
 </body>
 </html>

@@ -1,8 +1,8 @@
-#add {
+#add, #add_to_collection {
     background-color: #006f00;
     border: none;
     color: white;
-    padding: 15px 32px;
+    padding: 5px 5px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
@@ -50,7 +50,7 @@
     background-color: #6f0000;
     border: none;
     color: white;
-    padding: 15px 32px;
+    padding: 5px 5px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
@@ -63,7 +63,7 @@
     background-color: #00006f;
     border: none;
     color: white;
-    padding: 15px 32px;
+    padding: 5px 5px;
     text-align: center;
     text-decoration: none;
     display: inline-block;

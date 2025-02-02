@@ -1,7 +1,15 @@
 // Generates a table of all the coin attributes and buttons.
 function make_table(container, data) {
     var table = "<table>";
-
+    table += "<col span='1' style='width: 10px;'>"; // ID
+    table += "<col span='1' style='width: 25px;'>"; // Image
+    table += "<col span='1' style='width: 25px;'>"; // Denomination
+    table += "<col span='1' style='width: 50px;'>"; // Region
+    table += "<col span='1' style='width: 50px;'>";
+    table += "<col span='1' style='width: 50px;'>";
+    table += "<col span='1' style='width: 100px;'>";
+    table += "<col span='1' style='width: 20px;'>";
+    table += "<col span='1' style='width: 100px;'>";
     // This creates every table row for every coin.
     for (i = 0; i < data.length; i++) {
         const row = data[i];
@@ -22,8 +30,11 @@ function make_table(container, data) {
         if (i > 0) {
             // This button triggers edit coin and calls edit to send the coin id to the URL hash.
             table += "<button type='button' id='edit_coin' onclick=edit(" + data[i][0] + ")"
-                + ">Edit Coin</button>"
-            // This button adds the coin to the collection and sends the id to the hash for display.
+                + ">Edit Coin</button><br>"
+            // This button adds the coin to the collection
+            table += "<button type='button' id='add_to_collection' onclick=add_to_collection(" + data[i][0] + ")"
+                + ">Add to Collection</button><br>"
+            // This button calls delete coin and passes the id to the AJAX call.
             table += "<button type='button' id='delete_coin' onclick=delete_coin(" + data[i][0] + ")"
                 + ">Delete Coin</button>"
         }
@@ -38,17 +49,13 @@ function edit(coin_id) {
     document.location.href = "/static/add_coin.html#" + coin_id;
 }
 
-function add_to_collection(coin_id) {
-    document.location.href = "/static/display_collection.html#" + coin_id;
-}
-
 // Current coins is the list of coins to display in the catalogue table.
 var current_coins = [];
 // Current collections is the list of collections with their ids.
 var current_collections = [];
 
+$.ajax({url: "/get_coins", success: get_coins_callback});
 $.ajax({url: "/get_collection", success: get_collection_callback})
-
 
 function get_coins_callback(result_in) {
     current_coins = result_in;
@@ -71,8 +78,39 @@ function fill_dropdown(container) {
 }
 
 // Adds collection name to title and images to div displaying collection.
-function select_collection(index) {
-    $("#collection").html(current_collections[index].coins.toString());
+function display_selected_collection() {
+    index = $("#collection_list").val();
+    selected_collection = current_collections[index];
+    var result = "";
+    // This loops through the selected coins and finds the image for each.
+    for (let i = 0; i < selected_collection.coins.length; i++) {
+        selected_image = null;
+        for (let j = 0; j < current_coins.length; j++) {
+            if (String(current_coins[j][0]) == String(selected_collection.coins[i])) {
+                selected_image = current_coins[j][1];
+            }
+        }
+        // Images are stored in uploads folder, so that has to be added manually.
+        result += "<img src='" + "uploads/" + selected_image + "' ";
+        result += "onclick='remove_from_collection(" + i + ")'>";
+    }
+    $("#collection").html(result);
+}
+
+// Adds coin id to appropriate collection found by name.
+function add_to_collection(coin_id) {
+    collection_index = $("#collection_list").val();
+    current_collections[collection_index].coins.push(coin_id);
+    save_collection();
+    display_selected_collection();
+}
+
+// Removes coin, given position in array.
+function remove_from_collection(coin_index) {
+    collection_index = $("#collection_list").val();
+    current_collections[collection_index].coins.splice(coin_index, 1);
+    save_collection();
+    display_selected_collection();
 }
 
 
