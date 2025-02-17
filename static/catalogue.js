@@ -52,7 +52,7 @@ function edit(coin_id) {
 
 // Current coins is the list of coins to display in the catalogue table.
 var current_coins = [];
-// Current collections is the list of collections with their ids.
+// Current collections is the 2D list of collections with their ids.
 var current_collections = [];
 
 $.ajax({url: "/get_coins", success: get_coins_callback});
@@ -93,7 +93,7 @@ function display_selected_collection() {
         }
         result += "<img src='" + "uploads/" + selected_image + "' "; // Adds image
         result += "onclick='remove_from_collection(" + i + ")'" // Adds click event to remove with coin index
-        result += "style='height:250px;width:auto;' onmouseover='display_coin_data(" + i + ")'>"; // Adds mouseover event to display data
+        result += "style='height:250px;width:auto;' onmouseover='display_coin_data(" + i + ")'>";
     }
     $("#collection").html(result);
 }
@@ -106,7 +106,7 @@ function add_to_collection(coin_id) {
     display_selected_collection();
 }
 
-// Removes coin, given position in array.
+// Removes coin from collection, given its index.
 function remove_from_collection(coin_index) {
     collection_index = $("#collection_list").val();
     current_collections[collection_index].coins.splice(coin_index, 1);
@@ -165,7 +165,18 @@ function add_new_collection() {
 
 
 function delete_collection() {
-
+    name = $("#new_collection_name").val();
+    collections = [];
+    for (let i = 0; i < current_collections.length; i++) {
+        collection_name = current_collections[i].name;
+        if (collection_name != name) {
+            coin_list = current_collections[i].coins;
+            collections.push({"name": collection_name, "coins": coin_list})
+        }
+    }
+    current_collections = collections;
+    fill_dropdown($("#collection_list"));
+    save_collection();
 }
 
 
@@ -183,10 +194,31 @@ function save_collection() {
     }
 }
 
+// Helper method uses coin id to delete from collection.
+function remove_coin_id_from_collection(coin_id) {
+    change_collection = false;
+    for (let i = 0; i < current_collections.length; i++) {
+        collection_i = [];
+        for (let j = 0; j < current_collections[i].coins.length; j++) {
+            if (String(current_collections[i].coins[j]) != String(coin_id)) {
+                collection_i.push(current_collections[i].coins[j]);
+            } else {
+                change_collection = true;
+            }
+        }
+        if (change_collection) {
+            current_collections[i].coins = collection_i;
+            change_collection = false;
+        }
+    }
+    save_collection();
+    display_selected_collection();
+}
+
 
 // Sends a request to the backend to remove a coin.
 function delete_coin(coin_id) {
-
+    remove_coin_id_from_collection(coin_id);
     response = $.ajax({
         type: 'POST',
         url: "/remove",

@@ -23,7 +23,11 @@ def overwrite_coin(id, image, denomination, region, year, currency, metal, diame
     # reads from file to change data at id and overwrites with new data
     f = open(DATABASE_FILE_PATH, "r")
     data = json.loads(f.read())
-    data[int(id)] = [id, image, denomination, region, year, currency, metal, diameter]
+    index = -1
+    for i in range(len(data)):
+        if str(data[i][0]) == str(id):
+            index = i
+    data[index] = [id, image, denomination, region, year, currency, metal, diameter]
     f.close()
     f = open(DATABASE_FILE_PATH, "w")
     f.write(json.dumps(data))
@@ -40,9 +44,13 @@ def generate_new_id():
     f = open(DATABASE_FILE_PATH, "r")
     data = json.loads(f.read())
     highest_id = 0
+    id_list = []
     for coin in data:
-        if coin[0] > highest_id:
-            highest_id = coin[0]
+        id_list.append(coin[0])
+
+    for i in range(len(id_list) - 1):
+        if int(id_list[i + 1]) > highest_id:
+            highest_id = int(id_list[i + 1])
 
     return highest_id + 1
 
@@ -52,7 +60,6 @@ def add_new_data(denomination, image, region, year, currency, metal, diameter):
     data = json.loads(f.read())
     f.close()
     data.append([generate_new_id(), image, denomination, region, year, currency, metal, diameter])
-    data.append("/n")
     f = open(DATABASE_FILE_PATH, "w")
     f.write(json.dumps(data))
     f.close()
@@ -62,6 +69,18 @@ def write_collection(collection):
     f = open(COLLECTION_FILE_PATH, "w")
     f.write(json.dumps(collection))
     f.close()
+
+
+def remove_collection(collection):
+    f = open(COLLECTION_FILE_PATH, "w")
+    data = json.loads(f.read())
+    result = []
+    for coin_group in data:
+        if coin_group[1] != collection[1]:
+            result.append(data)
+    f.write(json.dumps(result))
+    f.close()
+
 
 def remove_data(coin_id):
     f = open(DATABASE_FILE_PATH, "r")

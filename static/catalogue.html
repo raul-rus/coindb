@@ -2,18 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Display</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="/static/catalogue.js"></script>
     <link href="/static/table.css" rel="stylesheet" />
     <link rel="stylesheet" href="style.css">
-    <title>Coin Catalogue</title>
 </head>
 <body>
-<h1>Coin Catalogue</h1>
+<h1>Display Collection</h1>
 <hr>
 <div class="dropdown">
-    <label for="collection_list">Choose Collection:</label>
+    <label for="collection_list">Display Collection:</label>
     <select name="collection_list" id="collection_list" onchange="display_selected_collection();">
         <-- This gets populated by the /get_collection callback. -->
     </select><br><br>
@@ -21,10 +20,11 @@
     <input type="text" id="new_collection_name" name="new_collection_name">
     <button type="button" id ="new_collection" onclick='add_new_collection()'>Add New Collection</button>
     <button type="button" id ="delete_collection" onclick='delete_collection()'>Delete This Collection</button>
-</div>
+</div><br>
 <div id="collection"></div>
 <div id="coin_information"></div>
 <hr>
+<h1>Coin Catalogue</h1>
 <label for="search">Search for Coins:</label>
 <input type="text" id="search" name="search" onkeyup="update_search();"><br><br>
 <div id="coin_list"></div>
