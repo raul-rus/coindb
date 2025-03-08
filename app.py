@@ -1,53 +1,65 @@
-import json
 import os
-
+import json
 import torch
-from flask import Flask, flash, request, redirect, url_for
-from werkzeug.utils import secure_filename
+from flask import Flask, request
 from coin_grader.model import Net
 
 UPLOAD_FOLDER = 'static/uploads'
-ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
-FEATURES = ['shape', 'wear', 'metal']
-MODELS = {}
 
 app = Flask(__name__, static_folder='static')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-#ACCESS = 'http://127.0.0.1:8000/'
-DATABASE_FILE_PATH = 'static/coin_database.txt'
+# Polymorphism in case the file names change.
+CATALOGUE_FILE_PATH = 'static/coin_database.txt'
 COLLECTION_FILE_PATH = 'static/display_collection.txt'
+FEATURES = ['shape', 'wear', 'metal']
+MODELS = {}
+
+
+# Helper method to create a list of coins to traverse by reading the file.
+def create_data_list(file_path):
+    file = open(file_path, "r")
+    json_object = json.loads(file.read())
+    file.close()
+    return json_object
+
+
+# Helper method that overwrites the files with new data.
+def overwrite_data_file(file_path, json_object):
+    file = open(file_path, "w")
+    file.write(json.dumps(json_object))
+    file.close()
 
 
 def overwrite_coin(id, image, denomination, region, year, currency, metal, diameter):
-    # reads from file to change data at id and overwrites with new data
-    f = open(DATABASE_FILE_PATH, "r")
-    data = json.loads(f.read())
+    data = create_data_list(CATALOGUE_FILE_PATH)
     index = -1
+    # Finds index of old element with id and overwrites it.
     for i in range(len(data)):
         if str(data[i][0]) == str(id):
             index = i
+
     data[index] = [id, image, denomination, region, year, currency, metal, diameter]
-    f.close()
-    f = open(DATABASE_FILE_PATH, "w")
-    f.write(json.dumps(data))
-    f.close()
+    # Saves the change to the data by overwriting the file.
+    overwrite_data_file(CATALOGUE_FILE_PATH, data)
 
 
+# Used in development to test, resets the catalogue for sanity.
 def reset_database():
-    f = open(DATABASE_FILE_PATH, "w")
-    f.write(json.dumps([["id", "image", "denomination", "region", "year", "currency", "metal", "diameter"]]))
-    f.close()
+    overwrite_data_file(CATALOGUE_FILE_PATH, json.dumps([["id", "image", "denomination", "region", "year", "currency", "metal", "diameter"]]))
+
+def reset_collections():
+    overwrite_data_file(COLLECTION_FILE_PATH, json.dumps([{"coins": [], "name": "Choose Collection"}]))
+
 
 def generate_new_id():
-    # find the highest id and increments by one to generate a new coin id
-    f = open(DATABASE_FILE_PATH, "r")
-    data = json.loads(f.read())
+    data = create_data_list(CATALOGUE_FILE_PATH)
     highest_id = 0
     id_list = []
+
     for coin in data:
         id_list.append(coin[0])
-
+    # Finds the highest id from the list, so the new id is the highest incremented by one.
     for i in range(len(id_list) - 1):
         if int(id_list[i + 1]) > highest_id:
             highest_id = int(id_list[i + 1])
@@ -56,47 +68,29 @@ def generate_new_id():
 
 
 def add_new_data(denomination, image, region, year, currency, metal, diameter):
-    f = open(DATABASE_FILE_PATH, "r")
-    data = json.loads(f.read())
-    f.close()
+    data = create_data_list(CATALOGUE_FILE_PATH)
     data.append([generate_new_id(), image, denomination, region, year, currency, metal, diameter])
-    f = open(DATABASE_FILE_PATH, "w")
-    f.write(json.dumps(data))
-    f.close()
+    overwrite_data_file(CATALOGUE_FILE_PATH, data)
 
 
 def write_collection(collection):
-    f = open(COLLECTION_FILE_PATH, "w")
-    f.write(json.dumps(collection))
-    f.close()
+    overwrite_data_file(COLLECTION_FILE_PATH, collection)
 
 
 def remove_collection(collection):
-    f = open(COLLECTION_FILE_PATH, "w")
-    data = json.loads(f.read())
+    data = create_data_list(COLLECTION_FILE_PATH)
     result = []
     for coin_group in data:
         if coin_group[1] != collection[1]:
             result.append(data)
-    f.write(json.dumps(result))
-    f.close()
+    overwrite_data_file(COLLECTION_FILE_PATH, result)
 
 
 def remove_data(coin_id):
-    f = open(DATABASE_FILE_PATH, "r")
-    data = json.loads(f.read())
-    f.close()
-
+    data = create_data_list(CATALOGUE_FILE_PATH)
     result = [coin for coin in data if str(coin[0]) != str(coin_id)]
+    overwrite_data_file(CATALOGUE_FILE_PATH, result)
 
-    f = open(DATABASE_FILE_PATH, "w")
-    f.write(json.dumps(result))
-    f.close()
-
-
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def load_models():
     for feature in FEATURES:
@@ -120,20 +114,16 @@ def score(image_path):
     return results
 
 
+
 @app.route("/get_coins", methods=['GET'])
 def get_coins():
-    f = open(DATABASE_FILE_PATH, "r")
-    data = json.loads(f.read())
-    f.close()
-    return data
+    return create_data_list(CATALOGUE_FILE_PATH)
 
 
 @app.route("/get_collection", methods=['GET'])
 def get_collection():
-    f = open(COLLECTION_FILE_PATH, "r")
-    collection = json.loads(f.read())
-    f.close()
-    return collection
+    return create_data_list(COLLECTION_FILE_PATH)
+
 
 @app.route("/save_collection", methods=['POST'])
 def save_collection():
@@ -165,7 +155,7 @@ def edit():
 @app.route('/upload_image', methods=['POST'])
 def upload_file():
     file = request.files['myfile']
-    if file and allowed_file(file.filename):
+    if file:
         path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
         file.save(path)
         return {'response': os.path.join('uploads', file.filename),
